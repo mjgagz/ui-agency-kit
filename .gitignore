@@ -1,0 +1,18 @@
+# OS & Editor
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.swo
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+.idea/
+
+# Logs & temporary files
+*.log
+tmp/
+temp/
+
+# Dependencies (none required by this repository)
+node_modules/

@@ -1,0 +1,13 @@
+{
+  "$schema": "https://antigravity.google/schemas/v1/plugin.json",
+  "name": "ui-agency-kit",
+  "displayName": "UI Agency Kit",
+  "version": "1.0.0",
+  "description": "Agency-grade UI/UX design kit featuring permanent design rules, the ui-agency-flow workflow skill, and read-only ui-critic and qa-operativo audit subagents with live browser verification.",
+  "logo": "assets/logo.svg",
+  "suggestedPrompts": [
+    "Audita visualmente esta vista en vivo con ui-critic y clasifica los hallazgos",
+    "Ejecuta una auditoría de flujos, filtros y formularios con qa-operativo",
+    "Rediseña esta pantalla paso a paso usando /ui-agency-flow"
+  ]
+}

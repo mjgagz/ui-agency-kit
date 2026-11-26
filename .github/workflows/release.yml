@@ -1,0 +1,57 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: Semantic version bump type
+        required: true
+        default: patch
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Bump version across manifests and changelog
+        run: node scripts/bump-version.mjs "${{ inputs.bump }}"
+
+      - name: Read next version
+        id: version
+        run: |
+          NEXT_VERSION=$(node -e "console.log(JSON.parse(require('fs').readFileSync('.antigravity-plugin/plugin.json','utf8')).version)")
+          echo "value=${NEXT_VERSION}" >> "$GITHUB_OUTPUT"
+
+      - name: Commit version bump and create tag
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .antigravity-plugin/plugin.json .claude-plugin/plugin.json .codex-plugin/plugin.json CHANGELOG.md
+          git commit -m "chore(release): v${{ steps.version.outputs.value }}"
+          git tag -a "v${{ steps.version.outputs.value }}" -m "Release v${{ steps.version.outputs.value }}"
+          git push origin HEAD --follow-tags
+
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "v${{ steps.version.outputs.value }}" \
+            --title "v${{ steps.version.outputs.value }}" \
+            --generate-notes
